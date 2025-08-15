@@ -4,6 +4,8 @@ import { ENV } from "./config/env.js";
 import { favoriteTable } from "./db/schema.js";
 import { db } from "./config/db.js";
 import { and, eq } from "drizzle-orm";
+import job from "./config/cron.js";
+
 
 const app = express();
 const PORT = ENV.PORT || 5001;
@@ -11,6 +13,8 @@ const PORT = ENV.PORT || 5001;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+if(ENV.NODE_ENV === "production") job.start();
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
