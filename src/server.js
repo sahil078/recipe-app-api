@@ -14,11 +14,26 @@ const PORT = ENV.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 
-if(ENV.NODE_ENV === "production") job.start();
+// Start cron job only in production
+if (ENV.NODE_ENV === "production") {
+    console.log("🚀 Starting cron job for production environment");
+    job.start();
+    console.log("⏰ Cron job scheduled to run every 14 minutes");
+} else {
+    console.log("🔧 Development mode: Cron job disabled");
+}
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
-  res.status(200).json({ message: "Server is running", success: true });
+    const timestamp = new Date().toISOString();
+    console.log(`🏥 Health check requested at ${timestamp}`);
+    
+    res.status(200).json({ 
+        message: "Server is running", 
+        success: true,
+        timestamp: timestamp,
+        environment: ENV.NODE_ENV || 'development'
+    });
 });
 
 // Favorites endpoint
